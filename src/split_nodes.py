@@ -2,7 +2,6 @@ import re
 
 from textnode import TextNode, TextType
 from htmlnode import HTMLNode, LeafNode, ParentNode
-from text_to_html import text_node_to_html_node
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []

@@ -2,6 +2,7 @@ from textnode import TextNode, TextType
 from htmlnode import HTMLNode, LeafNode, ParentNode
 from split_nodes import split_nodes_image, split_nodes_link, split_nodes_delimiter
 
+
 def text_node_to_html_node(text_node):
     text = text_node.text
     match text_node.text_type:
