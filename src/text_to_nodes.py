@@ -2,12 +2,12 @@ from textnode import TextNode, TextType
 from htmlnode import HTMLNode, LeafNode, ParentNode
 from split_nodes import split_nodes_image, split_nodes_link, split_nodes_delimiter
 
-
+# convert INLINE text with parent nodes to appropriate html leaf nodes
 def text_node_to_html_node(text_node):
     text = text_node.text
     match text_node.text_type:
         case TextType.TEXT:
-            return LeafNode(text)
+            return LeafNode("", text)
         case TextType.BOLD:
             return LeafNode("b", text)
         case TextType.ITALIC:
@@ -18,7 +18,8 @@ def text_node_to_html_node(text_node):
             return LeafNode("a", text)
         case TextType.IMAGE:
             return LeafNode("img", "", None, {"src": text_node.url, "alt": text_node.text})
-        
+
+# convert INLINE text in a node into separate text nodes
 def text_to_textnodes(text):
     node = TextNode(text, TextType.TEXT)
     nodes = split_nodes_delimiter([node], '**', TextType.BOLD)

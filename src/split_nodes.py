@@ -53,14 +53,15 @@ def split_nodes(old_nodes, regex, text_type):
                 index += 1
     return new_nodes
 
+# I know
 def extract_markdown_images(text):
     return re.findall(r"!\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
-
+# This
 def extract_markdown_links(text):
     return re.findall(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
-
+# is
 def split_nodes_image(old_nodes):
         return split_nodes(old_nodes, r"!\[([^\[\]]*)\]\(([^\(\)]*)\)", TextType.IMAGE)
-
+# gross
 def split_nodes_link(old_nodes):
         return split_nodes(old_nodes, r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)", TextType.LINK)
