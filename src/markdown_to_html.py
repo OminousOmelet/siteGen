@@ -12,15 +12,12 @@ def markdown_to_html_node(markdown):
     parent_nodes = []
     for block in blocks:
         block.strip()
-        # if block_to_block_type(block) == BlockType.ULIST:
-        #     parent_nodes.append(ParentNode("ul", list_block(block.replace('\n', ' '), r'- ')))
-        # elif block_to_block_type(block) == BlockType.OLIST:
-        #     parent_nodes.append(ParentNode("ol", list_block(block.replace('\n', ' '), r'\d.')))
-        # else:
-        #     parent_nodes.append(create_children(block))
-        parent_nodes.append(create_children(block))
+        if block_to_block_type(block) == BlockType.CODE:
+            parent_nodes.append(ParentNode("pre", [LeafNode("code", block.strip('`').lstrip('\n'))]))
+        else:
+            parent_nodes.append(create_children(block))
 
-    return ParentNode("div", parent_nodes).to_html()
+    return ParentNode("div", parent_nodes)
 
 
 def block_tag_and_strip(block):
@@ -28,30 +25,41 @@ def block_tag_and_strip(block):
         case BlockType.PARAGRAPH:
             return "p", block.replace('\n', ' ')
         case BlockType.HEADING:
-            return "h", block.strip('#').replace('\n', ' ')
-        case BlockType.CODE:
-            return "code", block.strip('`').replace('\n', ' ')
+            nblock = block.lstrip('#')
+            hl = len(block) - len(nblock)
+            return f"h{hl}", nblock.lstrip().replace('\n', ' ')
         case BlockType.QUOTE:
-            return "blockquote", block.strip('"').replace('\n', ' ')
+            return "blockquote", block.lstrip('> ').replace('\n', ' ')
         case BlockType.ULIST:
-            return "ul", block.replace('\n', ' ')
+            return "ul", block
         case BlockType.OLIST:
-            return "ol", block.replace('\n', ' ')
+            return "ol", block
 
 
-def list_block(block, prefix):
-    text = block.replace('\n', ' ')
+def list_elements(text, prefix):
     list = re.split(prefix, text)
     new_list = []
     for item in list:
-        new_list.append(ParentNode("li", create_children(item)))
+        #First item in split is always empty, creates error with no children for ParentNode
+        if item == "":
+            continue
+        new_list.append(ParentNode("li", create_inner_nodes(item.strip('\n').replace('\n', ' '))))
     return new_list
 
 
 def create_children(block):
     tag, text = block_tag_and_strip(block)
+    if tag == "ul":
+        return ParentNode(tag, list_elements(text, r'- '))
+    if tag == "ol":
+        return ParentNode(tag, list_elements(text, r'\d+. '))
+    
+    inner_nodes = create_inner_nodes(text)
+    return ParentNode(tag, inner_nodes)
+    
+def create_inner_nodes(text):
+    inner_nodes = []
     text_nodes = text_to_textnodes(text)
-    ln = []
     for node in text_nodes:
-        ln.append(text_node_to_html_node(node))
-    return ParentNode(tag, ln)
+        inner_nodes.append(text_node_to_html_node(node))
+    return inner_nodes

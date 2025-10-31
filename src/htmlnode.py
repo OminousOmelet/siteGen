@@ -20,6 +20,8 @@ class HTMLNode:
         props = self.props_to_html()
         if props != "":
             props = " " + props
+        if self.tag == "img":
+            props += " /"
         return f"<{self.tag}{props}>{self.value}</{self.tag}>"
     
 
@@ -28,7 +30,8 @@ class LeafNode(HTMLNode):
         super().__init__(tag, value, children, props)
 
     def to_html(self):
-        if not self.value:
+        # An image passes an empty string as value, must explicitly test 'None' value
+        if self.value is None:
             raise ValueError
         if not self.tag:
             return self.value
