@@ -30,6 +30,7 @@ def block_tag_and_strip(block):
             return f"h{hl}", nblock.lstrip().replace('\n', ' ')
         case BlockType.QUOTE:
             return "blockquote", block.lstrip('> ').replace('\n', ' ')
+        # Each element will be stripped in list_elements function
         case BlockType.ULIST:
             return "ul", block
         case BlockType.OLIST:
@@ -40,9 +41,10 @@ def list_elements(text, prefix):
     list = re.split(prefix, text)
     new_list = []
     for item in list:
-        #First item in split is always empty, creates error with no children for ParentNode
+        # First item in split is always empty, creates error with no children for ParentNode
         if item == "":
             continue
+        # Strip text here instead
         new_list.append(ParentNode("li", create_inner_nodes(item.strip('\n').replace('\n', ' '))))
     return new_list
 
