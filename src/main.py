@@ -1,5 +1,7 @@
+from copy_content import *
 
 def main():
-    pass
+    copy_content("static", "public")
+    return
 
 main()
