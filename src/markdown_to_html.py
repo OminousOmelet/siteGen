@@ -28,8 +28,14 @@ def block_tag_and_strip(block):
             nblock = block.lstrip('#')
             hl = len(block) - len(nblock)
             return f"h{hl}", nblock.lstrip().replace('\n', ' ')
+        # Need to fix (only the first line is stripped, requires something like 'list' code)
         case BlockType.QUOTE:
-            return "blockquote", block.lstrip('> ').replace('\n', ' ')
+            quoteLines = block.split('\n')
+            stripped = []
+            for line in quoteLines:
+                stripped.append(line.lstrip('>').lstrip())
+                newBlock = ' '.join(stripped)
+            return "blockquote", newBlock
         # Each element will be stripped in list_elements function
         case BlockType.ULIST:
             return "ul", block

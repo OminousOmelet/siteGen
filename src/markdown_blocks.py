@@ -30,7 +30,7 @@ def block_to_block_type(block):
         return BlockType.CODE
 
     lines = block.split('\n')
-    block_type = check_lines(lines, r"> ", BlockType.QUOTE)
+    block_type = check_lines(lines, r">", BlockType.QUOTE)
     if block_type == BlockType.QUOTE:
         return block_type
     block_type = check_lines(lines, r"- ", BlockType.ULIST)
