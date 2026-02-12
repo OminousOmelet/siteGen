@@ -39,3 +39,18 @@ def generate_page(from_path, template_path, dest_path):
     f.close()
 
     return temp2
+
+# Just recursive version of generate page func
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+
+    entryList = os.listdir(dir_path_content)
+    for e in entryList:
+        entry = os.path.join(dir_path_content, e)
+        print(entry + " | " + e)
+        if os.path.isfile(entry):
+            entry_dest = os.path.join(dest_dir_path, "index.html")
+            generate_page(entry, template_path, entry_dest)
+        else:
+            branch = os.path.join(dest_dir_path, e)
+            generate_pages_recursive(entry, template_path, branch)
+    return

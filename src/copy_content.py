@@ -9,7 +9,7 @@ def copy_content(src, dest, root=True):
     entryList = os.listdir(src)
     for e in entryList:
         entry = os.path.join(src, e)
-        print(entry)
+        # print(entry)
         if os.path.isfile(entry):
             shutil.copy(entry, dest)
         else:
