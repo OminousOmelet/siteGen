@@ -13,7 +13,7 @@ def extract_title(markdown):
     
     raise Exception("No title found!")
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(basepath, from_path, template_path, dest_path):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
     m = open(from_path, 'r')
     markdown = m.read()
@@ -27,6 +27,8 @@ def generate_page(from_path, template_path, dest_path):
     html = mNode.to_html()
     temp1 = template.replace("{{ Title }}", title)
     temp2 = temp1.replace("{{ Content }}", html)
+    temp3 = temp2.replace('href="/', 'href="' + basepath)
+    temp4 = temp3.replace('src="/', 'src="' + basepath)
     dir = os.path.dirname(dest_path)
     if not os.path.isdir(dir):
         os.makedirs(dir)
@@ -35,13 +37,13 @@ def generate_page(from_path, template_path, dest_path):
         with open(dest_path, 'x'):
             pass
     f = open(dest_path, 'w')    
-    f.write(temp2)
+    f.write(temp4)
     f.close()
 
     return temp2
 
 # Just recursive version of generate page func
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(basepath, dir_path_content, template_path, dest_dir_path):
 
     entryList = os.listdir(dir_path_content)
     for e in entryList:
@@ -49,8 +51,8 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
         print(entry + " | " + e)
         if os.path.isfile(entry):
             entry_dest = os.path.join(dest_dir_path, "index.html")
-            generate_page(entry, template_path, entry_dest)
+            generate_page(basepath, entry, template_path, entry_dest)
         else:
             branch = os.path.join(dest_dir_path, e)
-            generate_pages_recursive(entry, template_path, branch)
+            generate_pages_recursive(basepath, entry, template_path, branch)
     return
